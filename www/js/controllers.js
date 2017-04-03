@@ -5,7 +5,6 @@ angular.module('starter.controllers', [])
     url: "http://localhost:1337/api/event", 
     method: "GET"
   }).then(function successCallback(response) {
-    console.log(response);
     var map;
     var markers = [];
     var content;
@@ -27,7 +26,7 @@ angular.module('starter.controllers', [])
     
           // Current object
           var obj = $scope.events[i];
-          console.log(obj);
+          //console.log(obj);
 
 
           var location = new google.maps.LatLng(obj.lattEvent,obj.longEvent);
@@ -72,6 +71,10 @@ angular.module('starter.controllers', [])
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
+})
+
+.controller('SearchCtrl', function($scope) {
+  console.log($scope.event);
 })
 
 .controller('AccountCtrl', function($scope) {
