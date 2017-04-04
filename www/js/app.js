@@ -5,7 +5,66 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services',])
+
+.controller("indexController", function($scope, $rootScope, $http, $location) {
+  $scope.$on('$locationChangeStart', function(event) {
+    $scope.includeMap = ($location.url().substr(0, 9) == "/planning" || $location.url() == "/");
+    // $scope.includeMap = true;
+    if (!$scope.session) {
+      //console.log("Fetch Session");
+      $http({
+        url: "http://localhost:1337/api/session",
+        method: "GET"
+      }).then(function successCallback(response) {
+        if (!response.data.res) {
+          $scope.session = false;
+          $scope.id = "";
+          $scope.nomUser = "";
+          $scope.prenomUser = "";
+        } else {
+          $rootScope.session = response.data.res;
+          $scope.session = true;
+          $scope.id = response.data.res.id;
+          $scope.nomUser = response.data.res.nom;
+          $scope.prenomUser = response.data.res.prenom;
+        }
+        // alert("conn");
+      }, function errorCallback(response) {
+        $scope.session = false;
+        $scope.id = "";
+        $scope.nomUser = "";
+        $scope.prenomUser = "";
+        // alert("nconn");
+      });
+    }
+  });
+
+  $scope.destroySession = function() {
+    $http({
+      url: "http://localhost:1337/api/session",
+      method: "DELETE"
+    }).then(function successCallback(response) {
+      $rootScope.session = "";
+      $scope.session = false;
+      $scope.id = "";
+      $scope.nomUser = "";
+      $scope.prenomUser = "";
+    }, function errorCallback(response) {
+      $scope.session = false;
+      $scope.id = "";
+      $scope.nomUser = "";
+      $scope.prenomUser = "";
+    })
+  };
+})
+
+.config(function($ionicConfigProvider, $sceDelegateProvider){
+  
+
+  $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
+
+})
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -14,7 +73,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
-
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
@@ -23,74 +81,56 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+/*
+  This directive is used to disable the "drag to open" functionality of the Side-Menu
+  when you are dragging a Slider component.
+*/
+.directive('disableSideMenuDrag', ['$ionicSideMenuDelegate', '$rootScope', function($ionicSideMenuDelegate, $rootScope) {
+    return {
+        restrict: "A",  
+        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
-  $stateProvider
+            function stopDrag(){
+              $ionicSideMenuDelegate.canDragContent(false);
+            }
 
-  // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
+            function allowDrag(){
+              $ionicSideMenuDelegate.canDragContent(true);
+            }
 
-  // Each tab has its own nav history stack:
+            $rootScope.$on('$ionicSlides.slideChangeEnd', allowDrag);
+            $element.on('touchstart', stopDrag);
+            $element.on('touchend', allowDrag);
+            $element.on('mousedown', stopDrag);
+            $element.on('mouseup', allowDrag);
 
-  .state('tab.dash', {
-    url: '/dash',
-    views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
-      }
+        }]
+    };
+}])
+
+/*
+  This directive is used to open regular and dynamic href links inside of inappbrowser.
+*/
+.directive('hrefInappbrowser', function() {
+  return {
+    restrict: 'A',
+    replace: false,
+    transclude: false,
+    link: function(scope, element, attrs) {
+      var href = attrs['hrefInappbrowser'];
+
+      attrs.$observe('hrefInappbrowser', function(val){
+        href = val;
+      });
+      
+      element.bind('click', function (event) {
+
+        window.open(href, '_system', 'location=yes');
+
+        event.preventDefault();
+        event.stopPropagation();
+
+      });
     }
-  })
-
-  .state('tab.planning', {
-      url: '/planning',
-      views: {
-        'tab-planning': {
-          templateUrl: 'templates/tab-planning.html',
-          controller: 'PlanningCtrl'
-        }
-      }
-    })
-
-  .state('tab.search', {
-      url: '/search',
-      views: {
-        'tab-search': {
-          templateUrl: 'templates/tab-search.html',
-          controller: 'SearchCtrl'
-        }
-      }
-    })
-
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
-
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
-      }
-    }
-  });
-
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
-
+  };
 });
