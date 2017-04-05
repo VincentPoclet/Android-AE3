@@ -145,10 +145,9 @@ function ($scope, $stateParams) {
 
 .controller('loginCtrl',
 function ($scope, $http, $ionicPopup, $state) {
-	//$("#wrcred").hide();
+	
 	$scope.userdetails={};
 	$scope.login = function() {
-		// alert("go !");
 
 		console.log($scope.userdetails.email,$scope.userdetails.pw);
 		$http({
@@ -163,18 +162,38 @@ function ($scope, $http, $ionicPopup, $state) {
 		}, function errorCallback(response) {
 			console.log("nok");
 			 // An alert dialog
-					var alertPopup = $ionicPopup.alert({
-							title: 'Connection error!',
-							template: "Wrong E-mail or password."
-					});
+			var alertPopup = $ionicPopup.alert({
+					title: 'Connection error!',
+					template: "Wrong E-mail or password."
+			});
 		});
 	};
 })
 	 
-.controller('registerCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $location) {
+.controller('registerCtrl', 
+function($scope, $http, $ionicPopup, $state) {
 	
-}])
- 
+	$scope.user={};
+	$scope.register = function() {
+		
+		console.log($scope.user.nom,$scope.user.surnom,$scope.user.email,$scope.user.pw);
+		$http({
+			url: "http://localhost:1337/api/user", 
+			method: "POST",
+			data: {
+				nomUser: $scope.user.nom,
+				prenomUser: $scope.user.surnom,
+				emailUser: $scope.user.email,
+				pwdUser: $scope.user.pw
+			}
+		}).then(function successCallback(response) {
+			$state.go('login');
+		}, function errorCallback(response) {
+			// An alert dialog
+			var alertPopup = $ionicPopup.alert({
+					title: 'Connection error!',
+					template: "Account creation is not possible, try it later..."
+			});
+		});
+	};
+})

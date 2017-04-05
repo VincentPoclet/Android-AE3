@@ -1,38 +1,40 @@
 <ion-view title="Register" id="register">
-  <ion-content padding="true" class="has-header">
-    <div>
-      <img src="img/QgDmhS2RciNcvBPCKexQ_logoAE3.png" style="display: block; width: 30%; height: auto; margin-left: auto; margin-right: auto;">
-    </div>
-    <form id="signup-form4" class="list">
-      <label class="item item-input" id="signup-input5">
-        <span class="input-label">Name</span>
-        <input type="text" placeholder="">
-      </label>
-    </form>
-    <form id="signup-form5" class="list">
-      <label class="item item-input" id="signup-input6">
-        <span class="input-label">Surname</span>
-        <input type="text" placeholder="">
-      </label>
-    </form>
-    <form id="signup-form6" class="list">
-      <label class="item item-input" id="signup-input7">
-        <span class="input-label">Email</span>
-        <input type="email" placeholder="">
-      </label>
-    </form>
-    <form id="signup-form7" class="list">
-      <label class="item item-input" id="signup-input9">
-        <span class="input-label">Confirm password</span>
-        <input type="password" placeholder="">
-      </label>
-    </form>
-    <form id="signup-form8" class="list">
-      <label class="item item-input" id="signup-input8">
-        <span class="input-label">Password</span>
-        <input type="password" placeholder="">
-      </label>
-    </form>
-    <button id="signup-button5" class="button button-dark  button-block">Sign up</button>
-  </ion-content>
+	<ion-content padding="true" class="has-header">
+		<div>
+			<img src="img/QgDmhS2RciNcvBPCKexQ_logoAE3.png" style="display: block; width: 30%; height: auto; margin-left: auto; margin-right: auto;">
+		</div>
+		</br>
+		<ion-list id="register-list">
+
+			<label class="item item-input" id="login-input1">
+				<span class="input-label" for="nom">Name</span>
+				<input ng-model="user.nom" class="form-control" id="nom" type="text" />
+			</label>
+			
+			<label class="item item-input" id="login-input2">
+				<span class="input-label" for="prenom">Surname</span>
+				<input ng-model="user.surnom" class="form-control" id="prenom" type="text" />
+			</label>
+			
+			<label class="item item-input" id="login-input3">
+				<span class="input-label" for="email">E-mail</span>
+				<input ng-model="user.email" class="form-control" id="email" type="email" />
+			</label>
+			
+			<label class="item item-input" id="login-input4">
+				<span class="input-label" for="pw">Password</span>
+				<input ng-model="user.pw" class="form-control" id="pw" type="password" />
+			</label>
+			
+			<label class="item item-input" id="login-input5">
+				<span class="input-label" for="pwconf">Confirm</span>
+				<input class="form-control" id="pwconf" type="password" />
+			</label>
+			
+		</ion-list>
+		<div class="spacer" style="height: 40px;"></div>
+      	<button id="login-button3" class="button button-stable  button-block" ng-click="register()">Sign up</button>
+      	<a href="#/login" id="login-button4" class="button button-positive  button-block button-clear">I already have an account</a>
+
+	</ion-content>
 </ion-view>
