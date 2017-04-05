@@ -8,7 +8,44 @@
   	</ion-nav-buttons>
 
   <ion-content padding="true" class="has-header">
-  	
+  	<ion-content scroll="false" padding="true" class="has-header">
+		
+		<ion-list id="register-list">
+
+			<label class="item item-input" id="login-input1">
+				<span class="input-label" for="nom">Name</span>
+				<input ng-model="user.nom" class="form-control" id="nom" type="text" />
+			</label>
+			
+			<label class="item item-input" id="login-input2">
+				<span class="input-label" for="prenom">Surname</span>
+				<input ng-model="user.surnom" class="form-control" id="prenom" type="text" />
+			</label>
+			
+			<label class="item item-input" id="login-input3">
+				<span class="input-label" for="email">E-mail</span>
+				<input ng-model="user.email" class="form-control" id="email" type="email" />
+			</label>
+			
+			<label class="item item-input" id="login-input4">
+				<span class="input-label" for="pw">Password</span>
+				<input ng-model="user.pw" class="form-control" id="pw" type="password" />
+			</label>
+			
+			<label class="item item-input" id="login-input5">
+				<span class="input-label" for="pwconf">Confirm</span>
+				<input class="form-control" id="pwconf" type="password" />
+			</label>
+			
+		</ion-list>
+		<div class="spacer" style="height: 40px;"></div>
+      	<button id="login-button3" class="button button-stable  button-block" ng-click="modifyAccount()">Submit modification</button>
+
+
+		<div class="spacer" style="height: 40px;"></div>
+
+		<a href="" id="login-button4" class="button button-positive  button-block button-clear">More details</a>
+  </ion-content>
 
   </ion-content>
 </ion-view>

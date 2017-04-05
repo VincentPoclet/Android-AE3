@@ -1,6 +1,16 @@
 angular.module('app.controllers', [])
 	
 .controller('navigateCtrl', function($scope, $http, $ionicSideMenuDelegate) {
+	
+	$scope.toggleLeft = function () {
+		$ionicSideMenuDelegate.toggleLeft();
+	}
+
+	$scope.toggleRight = function () {
+		$ionicSideMenuDelegate.toggleRight();
+	}
+
+
 	$http({
 		url: "http://localhost:1337/api/event", 
 		method: "GET"
@@ -51,14 +61,6 @@ angular.module('app.controllers', [])
  	}, function errorCallback(response) {
 		alert("Error loading events");
 	}); 
-	
-	$scope.toggleLeft = function () {
-		$ionicSideMenuDelegate.toggleLeft();
-	}
-
-	$scope.toggleRight = function () {
-		$ionicSideMenuDelegate.toggleRight();
-	}
 })
 
 
@@ -95,6 +97,7 @@ function($scope, $http, $ionicSideMenuDelegate) {
 
 .controller('accountCtrl', 
 function($scope, $http, $ionicSideMenuDelegate) {
+	
 	$scope.toggleLeft = function () {
 		$ionicSideMenuDelegate.toggleLeft();
 	}
@@ -119,37 +122,39 @@ function($scope, $http, $ionicSideMenuDelegate) {
 
 
 	 
-.controller('menuCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+.controller('menuCtrl',
+function ($scope, $rootScope, $http, $state) {
 
+	$scope.deconnection = function() {
+		$http({
+			url: "http://localhost:1337/api/session",
+			method: "DELETE"
+		}).then(function successCallback(response) {
+			$rootScope.session = "";
+			$scope.session = false;
+			$scope.id = "";
+			$scope.nomUser = "";
+			$scope.prenomUser = "";
+			$state.go("/login");
+		}, function errorCallback(response) {
+			$scope.session = false;
+			$scope.id = "";
+			$scope.nomUser = "";
+			$scope.prenomUser = "";
+		})
+	};
 
-}])
+})
 	 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 .controller('loginCtrl',
-function ($scope, $http, $ionicPopup, $state) {
-	
+function ($scope, $rootScope, $http, $ionicPopup, $state) {
 	$scope.userdetails={};
 	$scope.login = function() {
-
-		console.log($scope.userdetails.email,$scope.userdetails.pw);
 		$http({
 			url: "http://localhost:1337/api/user", 
 			method: "GET",
@@ -158,7 +163,33 @@ function ($scope, $http, $ionicPopup, $state) {
 				'pwdUser': $scope.userdetails.pw
 			}
 		}).then(function successCallback(response) {
-			$state.go('menu.navigate');
+			if (!$scope.session) {
+				console.log("Fetch Session");
+				$http({
+					url: "http://localhost:1337/api/session",
+					method: "GET"
+				}).then(function successCallback(response) {
+					if (!response.data.res) {
+						$scope.session = false;
+						$scope.id = "";
+						$scope.nomUser = "";
+						$scope.prenomUser = "";
+					} else {
+						$rootScope.session = response.data.res;
+						$scope.session = true;
+						$scope.id = response.data.res.id;
+						$scope.nomUser = response.data.res.nom;
+						$scope.prenomUser = response.data.res.prenom;
+					}
+					alert("conn");
+				}, function errorCallback(response) {
+					$scope.session = false;
+					$scope.id = "";
+					$scope.nomUser = "";
+					$scope.prenomUser = "";
+					alert("nconn");
+				});
+			}$state.go('menu.navigate');
 		}, function errorCallback(response) {
 			console.log("nok");
 			 // An alert dialog
@@ -169,14 +200,15 @@ function ($scope, $http, $ionicPopup, $state) {
 		});
 	};
 })
+
+
+	
 	 
 .controller('registerCtrl', 
-function($scope, $http, $ionicPopup, $state) {
+function($scope, $http, $ionicPopup, $location) {
 	
 	$scope.user={};
 	$scope.register = function() {
-		
-		console.log($scope.user.nom,$scope.user.surnom,$scope.user.email,$scope.user.pw);
 		$http({
 			url: "http://localhost:1337/api/user", 
 			method: "POST",
@@ -187,7 +219,10 @@ function($scope, $http, $ionicPopup, $state) {
 				pwdUser: $scope.user.pw
 			}
 		}).then(function successCallback(response) {
-			$state.go('login');
+			var alertPopup = $ionicPopup.alert({
+					title: 'Connection error!',
+					template: "You are deconnected now"
+			});
 		}, function errorCallback(response) {
 			// An alert dialog
 			var alertPopup = $ionicPopup.alert({
@@ -195,5 +230,9 @@ function($scope, $http, $ionicPopup, $state) {
 					template: "Account creation is not possible, try it later..."
 			});
 		});
+	};
+
+	$scope.modifyAccount = function() {
+
 	};
 })

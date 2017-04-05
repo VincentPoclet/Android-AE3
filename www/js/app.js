@@ -7,58 +7,6 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services',])
 
-.controller("indexController", function($scope, $rootScope, $http, $location) {
-  $scope.$on('$locationChangeStart', function(event) {
-    $scope.includeMap = ($location.url().substr(0, 9) == "/planning" || $location.url() == "/");
-    // $scope.includeMap = true;
-    if (!$scope.session) {
-      //console.log("Fetch Session");
-      $http({
-        url: "http://localhost:1337/api/session",
-        method: "GET"
-      }).then(function successCallback(response) {
-        if (!response.data.res) {
-          $scope.session = false;
-          $scope.id = "";
-          $scope.nomUser = "";
-          $scope.prenomUser = "";
-        } else {
-          $rootScope.session = response.data.res;
-          $scope.session = true;
-          $scope.id = response.data.res.id;
-          $scope.nomUser = response.data.res.nom;
-          $scope.prenomUser = response.data.res.prenom;
-        }
-        // alert("conn");
-      }, function errorCallback(response) {
-        $scope.session = false;
-        $scope.id = "";
-        $scope.nomUser = "";
-        $scope.prenomUser = "";
-        // alert("nconn");
-      });
-    }
-  });
-
-  $scope.destroySession = function() {
-    $http({
-      url: "http://localhost:1337/api/session",
-      method: "DELETE"
-    }).then(function successCallback(response) {
-      $rootScope.session = "";
-      $scope.session = false;
-      $scope.id = "";
-      $scope.nomUser = "";
-      $scope.prenomUser = "";
-    }, function errorCallback(response) {
-      $scope.session = false;
-      $scope.id = "";
-      $scope.nomUser = "";
-      $scope.prenomUser = "";
-    })
-  };
-})
-
 .config(function($ionicConfigProvider, $sceDelegateProvider){
   
 
