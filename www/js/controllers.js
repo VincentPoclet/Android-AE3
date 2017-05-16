@@ -88,6 +88,7 @@ function($scope, $http, $ionicSideMenuDelegate) {
 			}
 	}).then(function successCallback(response) {
 		$scope.planning=response.data.data.plannings
+		$scope.planningEvents=response.data.data.plannings.events
 		console.log(response);
 	}, function errorCallback(response) {
 			console.log(response);
