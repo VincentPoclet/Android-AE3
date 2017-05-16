@@ -1,4 +1,4 @@
-<ion-view title="Planning" id="page2">
+<ion-view title="Planning" id="planning">
   <ion-nav-buttons side="left" class="has-header">
     <button class="button button-stable icon ion-android-menu" ng-click="toggleLeft()"></button>
   </ion-nav-buttons>
@@ -9,6 +9,17 @@
 
   <ion-content padding="true" class="has-header">
   	
+    <table id="eventsPlanning" class="table table-condensed table-striped">
+      <tbody>
+        <tr ng-repeat="x in planning">
+          <td>{{x.name}}</td>
+          <td>{{x.startDate}}</td>
+          <td>{{x.description}}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+      </tfoot>
+    </table>
   	
   </ion-content>
 </ion-view>

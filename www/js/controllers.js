@@ -80,19 +80,20 @@ function($scope, $http, $ionicSideMenuDelegate) {
 		$ionicSideMenuDelegate.toggleRight();
 	}
 
+	$http({
+			url: "http://localhost:1337/api/planning", 
+			method: "GET",
+			params: {
+				'idUser': 3
+			}
+	}).then(function successCallback(response) {
+		$scope.planning=response.data.data.plannings
+		console.log(response);
+	}, function errorCallback(response) {
+			console.log(response);
+	});
 })
 	
-
-
-
-
-
-
-
-
-
-
-
 
 
 .controller('accountCtrl', 
@@ -109,23 +110,11 @@ function($scope, $http, $ionicSideMenuDelegate) {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-	 
+ 
 .controller('menuCtrl',
 function ($scope, $rootScope, $http, $state) {
 
-	$scope.deconnection = function() {
+	$scope.deconnection = function() {          
 		$http({
 			url: "http://localhost:1337/api/session",
 			method: "DELETE"
@@ -181,7 +170,6 @@ function ($scope, $rootScope, $http, $ionicPopup, $state) {
 						$scope.nomUser = response.data.res.nom;
 						$scope.prenomUser = response.data.res.prenom;
 					}
-					alert("conn");
 				}, function errorCallback(response) {
 					$scope.session = false;
 					$scope.id = "";
